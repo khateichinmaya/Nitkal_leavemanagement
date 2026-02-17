@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Admin Dashboard</title>
+
+    <style>
+        body { font-family: Arial; background: #f8f9fc; padding: 30px; }
+
+        h2 { color: #e74a3b; }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            background: white;
+        }
+
+        th, td {
+            padding: 12px;
+            border-bottom: 1px solid #ddd;
+            text-align: center;
+        }
+
+        th { background: #4e73df; color: white; }
+
+        tr:hover { background: #f1f1f1; }
+
+        .approve {
+            padding: 6px 12px;
+            background: #1cc88a;
+            color: white;
+            border-radius: 4px;
+            text-decoration: none;
+        }
+
+        .reject {
+            padding: 6px 12px;
+            background: #e74a3b;
+            color: white;
+            border-radius: 4px;
+            text-decoration: none;
+            margin-left: 5px;
+        }
+
+        .approved { color: green; font-weight: bold; }
+        .rejected { color: red; font-weight: bold; }
+        .pending { color: orange; font-weight: bold; }
+
+        .logout {
+            margin-top: 25px;
+            display: inline-block;
+            background: #34495e;
+            color: white;
+            padding: 8px 15px;
+            border-radius: 5px;
+            border: none;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+<h2>Admin Dashboard</h2>
+
+<!-- ================= PENDING REQUESTS ================= -->
+<h3>Pending Leave Requests</h3>
+
+<table>
+    <thead>
+    <tr>
+        <th>Employee</th>
+        <th>Leave Type</th>
+        <th>Start Date</th>
+        <th>End Date</th>
+        <th>Days</th>
+        <th>Status</th>
+        <th>Action</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    <tr th:each="leave : ${pendingLeaves}">
+        <td th:text="${leave.employee.name}"></td>
+        <td th:text="${leave.leaveType}"></td>
+        <td th:text="${leave.startDate}"></td>
+        <td th:text="${leave.endDate}"></td>
+        <td th:text="${leave.numberOfDays}"></td>
+        <td class="pending">PENDING</td>
+        <td>
+            <a class="approve"
+               th:href="@{/admin/approve/{id}(id=${leave.id})}">
+                Approve
+            </a>
+
+            <a class="reject"
+               th:href="@{/admin/reject/{id}(id=${leave.id})}">
+                Reject
+            </a>
+        </td>
+    </tr>
+    </tbody>
+</table>
+
+
+<!-- ================= HISTORY ================= -->
+<h3>Leave History</h3>
+
+<table>
+    <thead>
+    <tr>
+        <th>Employee</th>
+        <th>Leave Type</th>
+        <th>Start Date</th>
+        <th>End Date</th>
+        <th>Days</th>
+        <th>Status</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    <tr th:each="leave : ${allLeaves}">
+        <td th:text="${leave.employee.name}"></td>
+        <td th:text="${leave.leaveType}"></td>
+        <td th:text="${leave.startDate}"></td>
+        <td th:text="${leave.endDate}"></td>
+        <td th:text="${leave.numberOfDays}"></td>
+
+        <td>
+            <span th:if="${leave.status == 'APPROVED'}" class="approved">APPROVED</span>
+            <span th:if="${leave.status == 'REJECTED'}" class="rejected">REJECTED</span>
+            <span th:if="${leave.status == 'PENDING'}" class="pending">PENDING</span>
+        </td>
+    </tr>
+    </tbody>
+</table>
+
+
+<!-- ================= LOGOUT ================= -->
+<form th:action="@{/logout}" method="post">
+    <button class="logout" type="submit">Logout</button>
+</form>
+
+</body>
+</html>
